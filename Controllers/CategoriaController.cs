@@ -20,21 +20,37 @@ namespace ApiCatalago.Controllers
 
         [HttpGet]
         public ActionResult<IEnumerable<Categoria>> Get() {
-            var categorias = _context.Categorias.AsNoTracking().Take(10).ToList();
+            try
+            {
 
-            return categorias;
+               var categorias = _context.Categorias.AsNoTracking().Take(10).ToList();
+               return categorias;
+            }
+            catch(Exception) {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um problema ao tratar a sua solicitação");
+
+                
+            }
+                
+           
+
         }
         [HttpGet("Produtos")]
 
         public ActionResult<IEnumerable<Categoria>> GetCategoriasProdutos() {
-            var categoria = _context.Categorias.Include(p => p.Produtos).AsNoTracking().Take(10).ToList();
-            if (categoria is null) {
-                return NotFound("Não foi possivel encontrar categoria nem produto");
+
+            try { 
+                var categoria = _context.Categorias.Include(p => p.Produtos).AsNoTracking().Take(10).ToList();
+                if (categoria is null) {
+                    return NotFound("Não foi possivel encontrar categoria nem produto");
                     
+                }
+                return categoria;
+            }
+            catch(Exception) {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um problema ao tratar a sua solicitação");
             }
 
-            return categoria;
-        
         }
         
 
